@@ -12,6 +12,7 @@ import net.minecraft.util.FormattedCharSequence;
 import java.util.List;
 
 /**
+ * @author Claude
  * Full-screen UI showing sync progress.
  */
 public class SyncProgressScreen extends Screen {

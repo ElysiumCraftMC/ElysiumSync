@@ -10,6 +10,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Claude
+ */
 public class FileSyncService {
     
     private final Path repositoryRoot;

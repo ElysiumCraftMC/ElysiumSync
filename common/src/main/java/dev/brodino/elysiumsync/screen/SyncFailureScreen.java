@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.util.List;
 
 /**
+ * @author Claude
  * Error screen shown when sync fails.
  */
 public class SyncFailureScreen extends Screen {
