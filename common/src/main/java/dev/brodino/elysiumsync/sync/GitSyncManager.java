@@ -292,5 +292,8 @@ public class GitSyncManager {
         public boolean isCancelled() {
             return context.getState() == SyncState.CANCELLED;
         }
+
+        @Override
+        public void showDuration(boolean b) {}
     }
 }
