@@ -20,16 +20,17 @@ public final class ElysiumSync {
 	 * Perform an early blocking sync during mod initialization
 	 * This ensures that files are synced BEFORE other mods (like KubeJS) have a chance to load their scripts
 	 * This method should be called from the mod's main initialization, not from client initialization, to ensure it runs early enough
+	 * @return true if sync completed successfully, false otherwise
 	 */
-	public static void performEarlySync() {
+	public static boolean performEarlySync() {
 		if (CONFIG.isDisabled()) {
 			LOGGER.info("Sync is disabled, skipping early sync");
-			return;
+			return true; // Not an error, just disabled
 		}
 		
 		if (!CONFIG.hasRepository()) {
 			LOGGER.info("No repository configured, skipping early sync");
-			return;
+			return true; // Not an error, just not configured
 		}
 
 		String repoUrl = CONFIG.getRepositoryUrl();
@@ -37,7 +38,7 @@ public final class ElysiumSync {
 		
 		if (repoUrl == null || repoUrl.trim().isEmpty()) {
 			LOGGER.info("Repository URL is empty, skipping early sync");
-			return;
+			return true; // Not an error, just empty
 		}
 		
 		LOGGER.info("Performing early blocking sync to ensure files are ready before other mods load");
@@ -50,6 +51,8 @@ public final class ElysiumSync {
 		} else {
 			LOGGER.warn("Early sync failed or timed out - other mods may not have the latest files");
 		}
+		
+		return success;
 	}
 	
 	public static void shutdown() {
