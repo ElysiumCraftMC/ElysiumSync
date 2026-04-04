@@ -3,7 +3,7 @@
   "id": "everload",
   "version": "${version}",
   "name": "EverLoad",
-  "description": "",
+  "description": "A simple mod that allows modpacks creator to perform hot changes to kubejs assets/scripts and various configs without having to update the client",
   "authors": [
     {
       "name": "Brodino",
