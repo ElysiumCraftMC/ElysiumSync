@@ -4,8 +4,32 @@
   "version": "${version}",
   "name": "EverLoad",
   "description": "",
-  "authors": [],
-  "contact": {},
+  "authors": [
+    {
+      "name": "Brodino",
+      "contact": {
+        "email": "brodino96@gmail.com",
+        "homepage": "https://brodino.dev",
+        "github": "https://github.com/Brodino96/",
+        "modrinth": "https://modrinth.com/user/brodino",
+        "curse": "https://www.curseforge.com/members/brodino/projects"
+      }
+    }
+  ],
+  "contributors": [
+    {
+      "name": "FapTobi_",
+      "contact": {
+        "curse": "https://www.curseforge.com/members/faptobi_/projects"
+      }
+    }
+  ],
+  "contact": {
+    "homepage": "https://docs.brodino.dev/minecraft/everload",
+    "issues": "https://github.com/Brodino96/EverLoad/issues",
+    "sources": "https://github.com/Brodino96/EverLoad",
+    "email": "brodino96@gmail.com"
+  },
   "license": "MIT",
   "icon": "assets/everload/icon.png",
   "environment": "*",
@@ -13,7 +37,9 @@
     "main": [
       "dev.brodino.everload.EverLoad"
     ],
-    "client": ["dev.brodino.everload.client.EverLoadClient"],
+    "client": [
+      "dev.brodino.everload.client.EverLoadClient"
+    ],
     "preLaunch": [
       "dev.brodino.everload.EverLoadPreLaunch"
     ]
