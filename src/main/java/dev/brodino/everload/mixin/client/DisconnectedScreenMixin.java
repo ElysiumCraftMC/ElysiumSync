@@ -37,9 +37,9 @@ public abstract class DisconnectedScreenMixin extends Screen {
 
         int buttonWidth = 200;
         int buttonHeight = 20;
-        int centerX = this.width / 2 - buttonWidth / 2;
-        // Vanilla "Back to title screen" button sits at height/2 + 50; place ours below it
-        int syncButtonY = this.height / 2 + 50 + 26;
+        int margin = 8;
+        int centerX = this.width - buttonWidth - margin;
+        int syncButtonY = this.height - buttonHeight - margin;
 
         everload$syncButton = new Button(
                 centerX, syncButtonY,
