@@ -1,5 +1,6 @@
 package dev.brodino.everload;
 
+import dev.brodino.everload.sync.SyncContext;
 import dev.brodino.everload.sync.SyncScheduler;
 import dev.brodino.everload.util.AsyncExecutor;
 import net.fabricmc.api.ModInitializer;
@@ -75,6 +76,41 @@ public final class EverLoad implements ModInitializer {
 		return success;
 	}
 	
+	/**
+	 * Trigger a manual sync on a background thread (e.g. from the disconnect screen button).
+	 * Shows the ChangeConfirmationDialog just like the startup flow.
+	 * @param onComplete Called on the calling thread when sync finishes (success or failure)
+	 */
+	public static void triggerManualSync(Runnable onComplete) {
+		if (CONFIG.isDisabled()) {
+			LOGGER.info("Sync is disabled, skipping manual sync");
+			if (onComplete != null) onComplete.run();
+			return;
+		}
+
+		if (!CONFIG.hasRepository()) {
+			LOGGER.info("No repository configured, skipping manual sync");
+			if (onComplete != null) onComplete.run();
+			return;
+		}
+
+		String repoUrl = CONFIG.getRepositoryUrl();
+		String branch = CONFIG.getBranch();
+
+		LOGGER.info("Triggering manual sync from disconnect screen");
+
+		SyncScheduler.startSync(
+			repoUrl,
+			branch,
+			SyncContext.Type.MANUAL,
+			onComplete,
+			e -> {
+				LOGGER.error("Manual sync failed: {}", e.getMessage(), e);
+				if (onComplete != null) onComplete.run();
+			}
+		);
+	}
+
 	public static void shutdown() {
 		LOGGER.info("Shutting down EverLoad");
 		AsyncExecutor.shutdown();
