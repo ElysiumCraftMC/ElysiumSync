@@ -2,6 +2,7 @@ package dev.brodino.everload.ui;
 
 import dev.brodino.everload.EverLoad;
 import dev.brodino.everload.sync.FileChanges;
+import dev.brodino.everload.util.PathUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,14 +10,17 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChangeConfirmationDialog {
 
-	private static final int DIALOG_WIDTH = 800;
-	private static final int DIALOG_HEIGHT = 400;
+	private static final int DIALOG_WIDTH = 854;
+	private static final int DIALOG_HEIGHT = 480;
 
 	// --- Dark Mode Palette ---
 	private static class DarkTheme {
@@ -70,10 +74,18 @@ public class ChangeConfirmationDialog {
 	 * Create and show the dialog on the EDT.
 	 */
 	private boolean showDialogOnEDT() {
+		int dialogWidth = DIALOG_WIDTH;
+		int dialogHeight = DIALOG_HEIGHT;
+		int[] mcSize = this.readMinecraftWindowSize();
+		if (mcSize != null) {
+			dialogWidth = mcSize[0];
+			dialogHeight = mcSize[1];
+		}
+
 		JDialog dialog = new JDialog((Frame) null, "EverLoad - Review Changes", Dialog.ModalityType.APPLICATION_MODAL);
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		dialog.setPreferredSize(new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT));
-		dialog.setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
+		dialog.setPreferredSize(new Dimension(dialogWidth, dialogHeight));
+		dialog.setSize(dialogWidth, dialogHeight);
 		dialog.setLocationRelativeTo(null);
 		dialog.requestFocus();
 		dialog.requestFocusInWindow(FocusEvent.Cause.ACTIVATION);
@@ -250,5 +262,32 @@ public class ChangeConfirmationDialog {
 		String shortened = url.replaceFirst("^https?://", "");
 
 		return shortened.length() > 60 ? shortened.substring(0, 57) + "..." : shortened;
+	}
+
+	/**
+	 * Read the Minecraft window size from options.txt in the game directory.
+	 * Returns [width, height] if both overrideWidth and overrideHeight are set, otherwise null.
+	 */
+	private int[] readMinecraftWindowSize() {
+		try {
+			Path optionsFile = PathUtil.getGameDirectory().resolve("options.txt");
+			if (!Files.exists(optionsFile)) return null;
+
+			int width = -1;
+			int height = -1;
+			for (String line : Files.readAllLines(optionsFile)) {
+				if (line.startsWith("overrideWidth:")) {
+					width = Integer.parseInt(line.substring("overrideWidth:".length()).trim());
+				} else if (line.startsWith("overrideHeight:")) {
+					height = Integer.parseInt(line.substring("overrideHeight:".length()).trim());
+				}
+			}
+			if (width > 0 && height > 0) {
+				return new int[]{width, height};
+			}
+		} catch (IOException | NumberFormatException e) {
+			EverLoad.LOGGER.warn("Could not read Minecraft window size from options.txt", e);
+		}
+		return null;
 	}
 }
